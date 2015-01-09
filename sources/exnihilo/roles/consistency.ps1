@@ -9,11 +9,13 @@ Configuration Role_exnihilo_consistency {
         SetScript = Format-DSCScriptBlock -includeDSCConfiguration -node @{} -scriptBlock {
             if ($DSCConfiguration.consistencyEnabled)
             {
-                Get-ScheduledTask -TaskPath "\Microsoft\Windows\Desired State Configuration\" -TaskName "Consistency" | Enable-ScheduledTask
+                & schtasks /Change /tn "\Microsoft\Windows\Desired State Configuration\Consistency" /ENABLE
+                & schtasks /Change /tn "\Microsoft\Windows\Desired State Configuration\DSCRestartBootTask" /ENABLE
             }
             else
             {
-                Get-ScheduledTask -TaskPath "\Microsoft\Windows\Desired State Configuration\" -TaskName "Consistency" | Disable-ScheduledTask
+                & schtasks /Change /tn "\Microsoft\Windows\Desired State Configuration\Consistency" /DISABLE
+                & schtasks /Change /tn "\Microsoft\Windows\Desired State Configuration\DSCRestartBootTask" /DISABLE
             }
         }
     }
