@@ -9,10 +9,6 @@ function Initialize-DSCConfiguration
     $configuration['_rolemap'] = @{}
     $configuration['_sources'] = @{}
     $configuration['_validators'] = @{}
-    #before going any further we need to initialize the working directory
-    Set-DSCConfiguration "mofDirectory" "$($env:TEMP)\mof"
-    if (!(test-path ($configuration.mofDirectory))) { new-item ($configuration.mofDirectory) -Type directory }
-    if (Test-Path ($configuration.mofDirectory + "\*") ) { Remove-Item ($configuration.mofDirectory+"\*") -Recurse -Force -ErrorAction Stop }
 
     if ($configFile)
     {
