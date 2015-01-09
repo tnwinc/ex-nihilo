@@ -90,6 +90,6 @@ function New-DSCConfiguration
         if (!(test-path ($configuration.mofDirectory))) { new-item ($configuration.mofDirectory) -Type directory | Out-Null }
         #if (Test-Path ($configuration.mofDirectory + "\*") ) { Remove-Item ($configuration.mofDirectory+"\*") -Recurse -Force -ErrorAction Stop }
 
-        ActualConfiguration -ConfigurationData $configData -OutputPath $configuration.mofDirectory
+        ActualConfiguration -ConfigurationData $configData -OutputPath $configuration.mofDirectory | Out-Null
     }
 }
