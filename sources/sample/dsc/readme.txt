@@ -1,0 +1,1 @@
+This directory is not mandatory, but it's a good place to park custom DSC modules. See init.ps1.
