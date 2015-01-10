@@ -1,4 +1,14 @@
 Function ConvertTo-EncodedJSON {
+    <#
+    .SYNOPSIS
+    Takes a hashmap and returns a URL encoded string of JSON
+
+    .PARAMETER inputObject
+    The object to be encoded
+
+    .EXAMPLE
+    ConvertTo-EncodedJSON @{'foo'='bar'}
+    #>
     param(
         [Parameter(
             Position=0, 
@@ -16,6 +26,33 @@ Function ConvertTo-EncodedJSON {
 
 function Merge-Hashmap
 {
+    <#
+    .SYNOPSIS
+    Merges two hashmaps
+
+    .DESCRIPTION
+    Merge two hashmaps, (optionally) preserving the original values. Does not handle nested hashmaps.
+
+    .PARAMETER baseMap
+    The hashmap being added to
+
+    .PARAMETER additionalMap
+    The hashmap to merge into baseMap
+
+    .PARAMETER force
+    If specified, all keys from additionalMap will be merged into baseMap, even if they already exist.
+
+    .EXAMPLE
+    $foo = Merge-Hashmap @{'foo'='bar'} @{'foo'='baz','fud'='biz'}
+
+    Returns @{'foo'='bar','fud'='biz}
+
+    .EXAMPLE
+    $foo = Merge-Hashmap @{'foo'='bar'} @{'foo'='baz','fud'='biz'} -force
+
+    Returns @{'foo'='baz','fud'='biz}
+
+    #>
     param(  
     [Parameter(
         Position=0, 
@@ -76,6 +113,10 @@ function ConvertTo-MaskLength {
 }
 
 function ConvertTo-Base64 {
+    <#
+    .SYNOPSIS
+    Convert a string to Base64
+    #>
     param(  
     [Parameter(
         Position=0, 
@@ -91,6 +132,10 @@ function ConvertTo-Base64 {
 }
 
 function ConvertFrom-Base64 {
+    <#
+    .SYNOPSIS
+    Convert a string from Base64
+    #>
     param(  
     [Parameter(
         Position=0, 
@@ -106,6 +151,15 @@ function ConvertFrom-Base64 {
 }
 
 function Check-Credential {
+    <#
+    .SYNOPSIS
+    Validate a set of Windows domain credentials are valid. Domain portion must be fully qualified: contoso.com\Username or username@contoso.com
+
+    .PARAMETER cred
+    As PSCredential object
+
+
+    #>
     param(  
     [Parameter(
         Position=0, 
@@ -122,6 +176,16 @@ function Check-Credential {
 
 Function Read-YesNo
 {
+    <#
+    .SYNOPSIS
+    A simple  yes/no promot where the result evaluates true/false
+
+    .PARAMETER tile
+    Tile of the prompt dialog
+
+    .PARAMETER message
+    Message in the promopt dialog
+    #>
     Param(
         $title,
         $message
