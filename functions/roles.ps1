@@ -1,5 +1,14 @@
 function Add-DSCRolemap
 {
+    <#
+    .SYNOPSIS
+    Adds a rolemap to the internal _rolemap array
+
+    .EXAMPLE
+    Add-DSCRolemap 'foo' @('foo/bar','foo/baz')
+
+    #>
+    #todo: Add-DSCRoleMap needs to have the parameters more rigidly defined
     Param(
         $roleMapName,
         $roles
@@ -8,6 +17,10 @@ function Add-DSCRolemap
 }
 function Expand-DSCActualRoles
 {
+    <#
+    .SYNOPSIS
+    Scans the roles specified in $configuration.roles and expands any rolemaps.
+    #>
     $actual_roles = @()
     $rolemap = $configuration['_rolemap']
     $configuration.roles | % {
@@ -20,6 +33,17 @@ function Expand-DSCActualRoles
     return $actual_roles
 }
 function Require-DSCRole {
+    <#
+    .SYNOPSIS
+    Checks the $configuration._rolesincluded array for the specified role and throws an exception if not present.
+
+    .PARAMETER name
+    The name of the role to require
+
+    .EXAMPLE
+    Require-DSCRole -name 'foo/bar'
+
+    #>
     param(  
     [Parameter(
         Position=0, 
@@ -36,10 +60,24 @@ function Require-DSCRole {
 }
 function Import-DSCActualRoles
 {
+    <#
+    .SYNOPSIS
+    Imports DSC actual roles, executing the init section and optionally the DSC configuration block.
+
+    .PARAMETER actualRoles
+    An array of roles to import
+
+    .PARAMETER invokeConfiguration
+    IF specified, the DSC configuration is invoked. This is usually done by New-DSCConfiguration
+
+    .EXAMPLE
+    Import-DSCActualRoles -actualRoles @('foo/bar','foo/baz')
+
+    #>
     param(
         [Parameter(
             Mandatory=$true
-        )]$actualRoles,
+        )][array]$actualRoles,
         [switch]$invokeConfiguration
     )
     $actualRoles | % {
