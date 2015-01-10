@@ -1,8 +1,28 @@
 function Initialize-DSCConfiguration
 {
+    <#
+    .SYNOPSIS
+    Initialize the global configuration object, and import seed data.
+
+    .DESCRIPTION
+    The configuration data is stored in a global object $configuration. This function will: initialize the object,
+    destroying any existing data; setup mandatory internal properties; and import seed data both from files or as a
+    parameter. A config file will be imported first, then any config settings.
+
+    .PARAMETER configFile
+    A file containing key/value pairs of properties to be added to configuration. A file with the .ps1 extension should define
+    a powershell hashmap. A .json file will be imported as JSON data.
+
+    .PARAMETER configSettings
+    A hashmap of key/value pairs to be merged into the configuration object.
+
+    .EXAMPLE
+    Initialize-DSCConfiguration -configFile somefile.json -configSettings @{'foo'='bar'}
+
+    #>
     param(
-        $configFile,
-        $configSettings
+        [string]$configFile,
+        [hashtable]$configSettings
     )
     $configuration = @{}
     $configuration['_rolesincluded']  = @()
@@ -24,6 +44,26 @@ function Initialize-DSCConfiguration
     $global:configuration = $configuration
 }
 function Set-DSCConfiguration {
+    <#
+    .SYNOPSIS
+    Sets a property in the configuration object.
+
+    .DESCRIPTION
+    Sets a property in the configuration object. By default, if a key already exists, it will not be overridden.
+
+    .PARAMETER key
+    The property key
+
+    .PARAMETER value
+    The property value
+
+    .PARAMETER force
+    If the key already exists, set the passed value. This overrides the default behavior.
+
+    .EXAMPLE
+    Set-DSCConfiguration 'foo' 'bar'
+
+    #>
     param(  
     [Parameter(
         Position=0, 
@@ -31,7 +71,7 @@ function Set-DSCConfiguration {
         ValueFromPipeline=$true,
         ValueFromPipelineByPropertyName=$true)
     ]
-    $key,
+    [string]$key,
     [Parameter(
         Position=1, 
         Mandatory=$true, 
@@ -54,6 +94,45 @@ function Set-DSCConfiguration {
 
 function Validate-DSCConfiguration
 {
+    <#
+    .SYNOPSIS
+    Validate a configuration value against specified properties.
+
+    .DESCRIPTION
+    A configuration parameter which is specified by a user can be chcked in a role initialization with
+    Validate-DSCConfiguration.
+
+    The function returns nothing, but throws an exception if validation fails. The exception is a
+    hashmap and contains all the relevant details.
+
+    #todo: Document the format of the exception hashmap
+
+    .PARAMETER key
+    The parameter key to check
+
+    .PARAMETER help
+    if the parameter is not set, or if it fails validation checks, this help string is returned to assist
+    the user.
+
+    .PARAMETER dataType
+    This option parmeter helps the validator know what to check. Accepted values are credential, domaincredential and string.
+
+    domaincredential data types use the Check-Credential function to validate the credential.
+
+    .PARAMETER acceptedValues
+    An array of case sensitive accepted values. If the value of the parameter is not in this array, it will not validate.
+
+    .EXAMPLE
+    Validate-DSCConfiguration 'foo'
+
+    Will simply confirm foo exists.
+
+    .EXAMPLE
+    Validate-DSCConfiguration 'foo' 'Foo must be set to bar or baz' -acceptedValues @('bar','baz')
+
+    Will check that foo is set to bar or baz, and if not, will throw an exception with the help string 'Foo must
+    be set to bar or baz'. You can catch the exception and do something meaningful with it.
+    #>
     param(  
     [Parameter(
         Position=0, 
@@ -61,16 +140,16 @@ function Validate-DSCConfiguration
         ValueFromPipeline=$true,
         ValueFromPipelineByPropertyName=$true)
     ]
-    $key,
+    [string]$key,
     [Parameter(
         Position=1, 
         Mandatory=$false, 
         ValueFromPipeline=$true,
         ValueFromPipelineByPropertyName=$true)
     ]
-    $help,
+    [string]$help,
     [ValidateSet('credential','domaincredential','string')]$dataType,
-    $acceptedValues
+    [array]$acceptedValues
     )
 
     #initialize the output object
@@ -110,6 +189,15 @@ Set-Alias -Name Require-DSCConfiguration -Value Validate-DSCConfiguration
 
 function Get-DSCConfigrationFromUser
 {
+    <#
+    .SYNOPSIS
+    Uses an exception from Validate-DSCConfiguration to prompt the user.
+
+    .PARAMETER properties
+    This is an exception hashmap thrown by Validate-DSCConfiguration. For an example of the format
+    see that function.
+
+    #>
     #Rather than take discreet settings, this takes the exception thrown by Validate-DSCConfiguration
     Param(
         $properties
@@ -123,6 +211,15 @@ function Get-DSCConfigrationFromUser
 
 function Get-DSCConfigFromVmware
 {
+    <#
+    .SYNOPSIS
+    Get a configuration parameter from VMWare
+
+    .DESCRIPTION
+    #todo: Document how to use this.
+
+    If you know how to inject guestinfo properties to VMWare guests, this will help.
+    #>
     param(  
     [Parameter(
         Position=0, 
