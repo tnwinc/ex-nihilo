@@ -27,7 +27,7 @@ function Initialize-DSCSource
             ValueFromPipeline=$true,
             ValueFromPipelineByPropertyName=$true)
         ]
-        [string]$source,
+        $source,
         [string]$namespace
     )
     #Write-Output "** $source"
