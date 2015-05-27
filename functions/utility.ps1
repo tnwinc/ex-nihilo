@@ -18,7 +18,7 @@ Function ConvertTo-EncodedJSON {
         ]
         $inputObject
     )
-    $json = $inputObject | ConvertTo-Json -Depth 32 | Out-String
+    $json = $inputObject | ConvertTo-Json -Depth 32 -Compress | Out-String
     $enc = [System.Web.HttpUtility]::UrlEncode($json)
     return $enc
 }
